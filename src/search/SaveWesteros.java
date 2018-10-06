@@ -1,16 +1,18 @@
 package search;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import search.State.Occupant;
+import search.WesterosState.Occupant;
+import utils.Pair;
 
 public class SaveWesteros extends Problem {
-	static int walkersAmount = 0;
-
-	public SaveWesteros(int walkersAlive, Occupant northOccupant, Occupant westOccupant, Occupant eastOccupant,
-			Occupant southOccupant) { // initial Occupants
+	int capacity;
+	public SaveWesteros(WesterosState initState, int capacity) {
 		this.operators = new HashSet<String>();
 		this.operators.add("Up");
 		this.operators.add("Down");
@@ -19,75 +21,64 @@ public class SaveWesteros extends Problem {
 		this.operators.add("Stab");
 		this.operators.add("Collect");
 
-		this.initialState = new State(0, 0, walkersAlive, northOccupant, westOccupant, eastOccupant, southOccupant);
+		this.initialState = initState;
+
+		this.capacity = capacity;
 	}
 
 	@Override
-	boolean goalTest(Object state) {
-		// TODO Auto-generated method stub
-		return false;
+	boolean goalTest(State state) {
+		return ((WesterosState)state).walkersAlive == 0;
 	}
 
 	@Override
-	int pathCost(Object node) {
+	int pathCost(Node node) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public static Occupant[][] GenGrid() {
-		int m = (int) (Math.random() * 100) + 4;
-		int n = (int) (Math.random() * 100) + 4;
-		// int capacity = (int)(Math.random()*100); to be added somewhere else
+	public static SolutionTrio Search(WesterosGrid westerosGrid, String strategy, boolean visualize) {
+		Occupant[][]grid = westerosGrid.grid;
+		WesterosState initalState = new WesterosState(
+									0, 
+									0,
+									westerosGrid.walkersAmount,
+									grid[0][1], 
+									grid[1][0], 
+									null, 
+									null
+									);
 
-		Occupant[][] grid = new Occupant[m][n];
-		grid[0][0] = Occupant.JON;
+		SaveWesteros saveWesteros = new SaveWesteros(initalState, westerosGrid.capacity);
 
-		Occupant[] cellOptions = Occupant.values();
+		Pair solution = generalSearch(saveWesteros, null); // till we create the actual
 
-		int walkersAmount = 0;
+		ArrayList<String> movesSequence = new ArrayList<String>();
+		//ArrayDeque to be used as a stack, to allow root to be placed on top
+		Deque<Node> nodesExpanded = new ArrayDeque<Node>();  
 
-		for (int i = 0; i < grid.length; i++)
-			for (int j = (i == 0) ? 1 : 0; j < grid[i].length; j++) {
-				grid[i][j] = cellOptions[(int) (Math.random() * 3)];
-				if (grid[i][j] == Occupant.WALKER)
-					walkersAmount++;
-			}
+		Node solutionNode = (Node) solution.getFirst();
+		int numberOfNodesExpanded = (Integer) solution.getSecond();
 
-		int dragonX = (int) (Math.random() * (m - 1)) + 1;
-		int dragonY = (int) (Math.random() * (n - 1)) + 1;
-		grid[dragonX][dragonY] = cellOptions[3];
+		for(Node current = solutionNode; current != null; current = current.parent) {
+			movesSequence.add(current.operatorApplied); //sequence is in reverse (starts from end)
+			nodesExpanded.push(current);
+		}
+		
+		int pathCost = solutionNode.pathCost;
 
-		return grid;
+		return new SolutionTrio(movesSequence, pathCost, numberOfNodesExpanded);
 	}
 
-	// public static BiFunction <ArrayList<Node> , ArrayList<Node>, > add = (a,
-	// b) -> {
-	// return a + b;
-	// }
-
-	public static Triple Search(Occupant[][] grid, BiFunction strategy, boolean visualize) {
-		SaveWesteros saveWesteros = new SaveWesteros(walkersAmount, grid[0][1], grid[1][0], null, null);
-
-		Pair solution = generalSearch(saveWesteros, strategy);
-		ArrayList<String> sequence = new ArrayList<String>();
-		
-		for(Node current = solution; current != null; current = current.parent)
-			sequence.add(current.operatorApplied); //sequence is in reverse (starts from end)
-		
-		int pathCost = solution.pathCost;
-		
-
-	}
-
-	public class Triple {
-		ArrayList<String> sequence;
+	public static class SolutionTrio {
+		ArrayList<String> movesSequence;
 		int totalCost;
-		int nodesExpanded;
+		int numberOfNodesExpanded;
 
-		public Triple(ArrayList<String> sequence, int totalCost, int nodesExpanded) {
-			this.sequence = sequence;
+		public SolutionTrio(ArrayList<String> movesSequence, int totalCost, int numberOfNodesExpanded) {
+			this.movesSequence = movesSequence;
 			this.totalCost = totalCost;
-			this.nodesExpanded = nodesExpanded;
+			this.numberOfNodesExpanded = numberOfNodesExpanded;
 		}
 	}
 }

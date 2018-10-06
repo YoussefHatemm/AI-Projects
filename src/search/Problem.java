@@ -1,27 +1,37 @@
 package search;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import utils.Pair;
 
 public abstract class Problem {
 	HashSet<String> operators;
-	Object initialState;
-	ArrayList<Object> stateSpace;
-	abstract boolean goalTest(Object state);
-	abstract int pathCost(Object node);
+	State initialState;
+	ArrayList<State> stateSpace;
+	abstract boolean goalTest(State state);
+	abstract int pathCost(Node node);
 	
-	public static Pair generalSearch(Problem problem, BiFunction strategy) {
-		return new Pair(0,0);
-	}
-	
-	public static class Pair {
-		Object a;
-		Object b;
-		
-		public Pair(Object a, Object b) {
-			this.a = a;
-			this.b = b;
+	public static Pair generalSearch(Problem problem, BiFunction< Deque<Node>, Node, Deque<Node> > strategyQnFn) {
+		//ArrayDeque to be used as a queue
+		Deque<Node> nodes = new ArrayDeque<Node>();
+		State curState = problem.initialState;
+		Node root = new Node(curState, null, null,0,0);
+		nodes.addFirst(root);
+		int nodesExpanded = 0;
+		while(nodes.size() != 0) {
+			Node curNode = nodes.removeFirst();
+			curState = curNode.state;
+			if (problem.goalTest(curState))
+				return new Pair(curNode, nodesExpanded);
+
+			nodes = strategyQnFn.apply(nodes, curNode);	
 		}
-	}
+		return new Pair(null, nodesExpanded); // no solution
+	}	
+	
 }
