@@ -5,23 +5,25 @@ public class WesterosState extends State {
 	int yCoord;
 	int ammo;
 	int walkersAlive;
-	Occupant northOccupant;
-	Occupant westOccupant;
-	Occupant eastOccupant;
-	Occupant southOccupant;
+	WesterosGrid wGrid;
 	
-	public WesterosState(int xCoord, int yCoord, int walkersAlive, Occupant northOccupant, Occupant westOccupant, Occupant eastOccupant, Occupant southOccupant) {
+	public WesterosState(int xCoord, int yCoord, int walkersAlive, WesterosGrid wGrid) {
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 		this.walkersAlive = walkersAlive;
-		this.northOccupant = northOccupant;
-		this.westOccupant = westOccupant;
-		this.eastOccupant = eastOccupant;
-		this.southOccupant = southOccupant;
+		this.wGrid = wGrid;
 	}
-	
+
+	public WesterosState(int xCoord, int yCoord, int ammo, int walkersAlive, WesterosGrid wGrid) {
+		this.xCoord = xCoord;
+		this.yCoord = yCoord;
+		this.ammo = ammo;
+		this.walkersAlive = walkersAlive;
+		this.wGrid = wGrid;
+	}
 	 
 	public enum Occupant {
 		WALKER, OBSTACLE, FREE, DRAGONSTONE, JON
 	}
+	
 }

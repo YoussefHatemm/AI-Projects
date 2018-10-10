@@ -9,12 +9,10 @@ public class WesterosGrid {
 
     Occupant[][] grid;
     int walkersAmount;
-    int capacity;
 
     public WesterosGrid(Occupant[][] grid, int walkersAmount) {
         this.grid = grid;
-        this.walkersAmount = walkersAmount;
-        capacity = (int)(Math.random()*100) + 1; 		
+        this.walkersAmount = walkersAmount; 		
     }
 
     public static WesterosGrid GenGrid() {
@@ -44,9 +42,5 @@ public class WesterosGrid {
 
     public int getWalkersAmount() {
         return walkersAmount;
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 }
