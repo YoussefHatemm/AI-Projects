@@ -16,8 +16,8 @@ public class WesterosGrid {
     }
 
     public static WesterosGrid GenGrid() {
-        int m = (int) (Math.random() * 100) + 4;
-		int n = (int) (Math.random() * 100) + 4;
+        int m = (int) (Math.random() * 4) + 4;
+		int n = (int) (Math.random() * 4) + 4;
         
         int walkersAmount = 0;
 
@@ -42,5 +42,33 @@ public class WesterosGrid {
 
     public int getWalkersAmount() {
         return walkersAmount;
+    }
+
+    @Override
+    public String toString() {
+        String output = "";
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                output += occupantString(grid[i][j]) + " ";
+            }
+            output += "\n";
+        }
+        return output;
+    }
+
+    public static String occupantString(Occupant occup) {
+        switch (occup) {
+            case FREE:
+                return "F";
+            case OBSTACLE:
+                return "O";
+            case DRAGONSTONE:
+                return "D";
+            case WALKER:
+                return "W";
+            case JON:
+                return "J";
+        }
+        return null;
     }
 }

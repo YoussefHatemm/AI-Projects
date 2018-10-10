@@ -17,4 +17,15 @@ public class Node {
 	public void setPathCost(int pathCost) {
 		this.pathCost = pathCost;
 	}
+
+	@Override
+	public String toString() {
+		String parentString = (parent != null)? ( (parent.operatorApplied != null)? parent.operatorApplied : "Initial Node") : "";
+		String operator = (operatorApplied != null)? operatorApplied: "";
+		return 
+			"State: \n" + state + 
+				"\n Parent: " + parentString + 
+				", OperatorApplied: " + operator + "\n depth: " +
+				 depth + ", pathCost: " + pathCost;
+	}
 }

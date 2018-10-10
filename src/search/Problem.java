@@ -1,15 +1,13 @@
 package search;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import utils.Pair;
 
 public abstract class Problem {
-	HashSet<String> operators;
+	ArrayList<String> operators;
 	State initialState;
 	abstract State stateSpace(String operator, State state);
 	abstract boolean goalTest(State state);
@@ -24,6 +22,7 @@ public abstract class Problem {
 		while(!queue.isEmpty()) {
 			Node curNode = queue.get(0);
 			curState = curNode.state;
+			System.out.println("The currNode is: \n" + curNode.toString());
 			if (problem.goalTest(curState))
 				return new Pair(curNode, nodesExpanded);
 
@@ -36,7 +35,10 @@ public abstract class Problem {
 	public ArrayList<Node> expand(Node node) {
 		ArrayList<Node> output = new ArrayList<>();
 		for (String operator: this.operators) {
+			System.out.println("The curr operator: " + operator);
 			State newState = this.stateSpace(operator, node.state);
+			if (newState == null)
+				continue;
 			Node newNode = new Node(newState, node, operator, node.depth + 1);
 			this.pathCost(newNode);
 			output.add(newNode);

@@ -26,7 +26,7 @@ public class SaveWesteros extends Problem {
 	int capacity;
 
 	public SaveWesteros(WesterosState initialState) {
-		this.operators = new HashSet<String>();
+		this.operators = new ArrayList<String>();
 		this.operators.add("Up");
 		this.operators.add("Down");
 		this.operators.add("Right");
@@ -152,6 +152,8 @@ public class SaveWesteros extends Problem {
 				return null;
 
 		}
+		grid[newY][newX] = Occupant.JON;
+		grid[ wState.yCoord][wState.xCoord] = Occupant.FREE;
 		WesterosGrid newGrid = new WesterosGrid(grid, wState.wGrid.walkersAmount);
 		return new WesterosState(newX, newY, newAmmo, newWalkers, newGrid);
 	}
@@ -165,18 +167,28 @@ public class SaveWesteros extends Problem {
 
 		Pair solution = generalSearch(saveWesteros, strategy);
 
-		ArrayList<String> movesSequence = new ArrayList<String>();
+		ArrayList<String> movesSequence = null;
 
-		Node solutionNode = (Node) solution.getFirst();
+		Node solutionNode = null;
 		int numberOfNodesExpanded = (Integer) solution.getSecond();
 
-		for (Node current = solutionNode; current != null; current = current.parent) {
-			movesSequence.add(current.operatorApplied); // sequence is in reverse (starts from end)
+		if (solution.getFirst() != null) {
+			movesSequence = new ArrayList<String>();
+			solutionNode = (Node) solution.getFirst();
+	
+			for (Node current = solutionNode; current != null; current = current.parent) {
+				movesSequence.add(current.operatorApplied); // sequence is in reverse (starts from end)
+			}
 		}
-
-		int pathCost = solutionNode.pathCost;
+			
+		int pathCost = (solutionNode != null)? solutionNode.pathCost : 0;
 
 		return new SolutionTrio(movesSequence, pathCost, numberOfNodesExpanded);
+	}
+	public static void main(String []args) {
+		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
+		SolutionTrio solution = Search(westerosGrid, Strategies.bfs, false);
+		System.out.println(solution.toString());
 	}
 
 	public static class SolutionTrio {
@@ -188,6 +200,11 @@ public class SaveWesteros extends Problem {
 			this.movesSequence = movesSequence;
 			this.totalCost = totalCost;
 			this.numberOfNodesExpanded = numberOfNodesExpanded;
+		}
+
+		@Override
+		public String toString() {
+			return "THE SOLLUTION:\n Sequence: " + movesSequence.toString() + "\n TotalCost: " + totalCost + "\n Number of Nodes expanded " + numberOfNodesExpanded;
 		}
 	}
 }

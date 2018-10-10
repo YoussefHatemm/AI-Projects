@@ -25,5 +25,10 @@ public class WesterosState extends State {
 	public enum Occupant {
 		WALKER, OBSTACLE, FREE, DRAGONSTONE, JON
 	}
+
+	@Override
+	public String toString() {
+		return "Xcoord: " + xCoord + "\n Ycoord: " + yCoord + "\n Ammo:" + ammo + "\n Grid:\n" + wGrid;
+	}
 	
 }
