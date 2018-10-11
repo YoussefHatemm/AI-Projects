@@ -39,7 +39,8 @@ public abstract class Problem {
 			if (problem.goalTest(curState))
 				return new Pair(curNode, nodesExpanded);
 
-			queue = strategyQnFn.apply(queue, problem.expand(curNode));	
+			queue = strategyQnFn.apply(queue, problem.expand(curNode));
+			nodesExpanded++;
 		}
 	
 		return new Pair(null, nodesExpanded); // no solution
