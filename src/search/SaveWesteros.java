@@ -61,12 +61,13 @@ public class SaveWesteros extends Problem {
 
 	@Override
 	State stateSpace(String operator, State state) {
+//		System.out.println("Trying operator...");
 		WesterosState wState = (WesterosState) state;
 		int newY = wState.yCoord;
 		int newX = wState.xCoord;
 		int newAmmo = wState.ammo;
 		int newWalkers = wState.walkersAlive;
-		Occupant[][] grid = wState.wGrid.grid.clone();
+		Occupant[][] grid = WesterosGrid.deepCloneGrid(wState.wGrid);
 		Occupant northOccupant = (newY < grid.length - 1) ? grid[newY + 1][newX] : null;
 		Occupant southOccupant = (newY > 0) ? grid[newY - 1][newX] : null;
 		Occupant eastOccupant = (newX > 0) ? grid[newY][newX - 1] : null;
@@ -83,7 +84,7 @@ public class SaveWesteros extends Problem {
 			walkersLocations.add(new Pair(newY, newX - 1));
 
 		if (westOccupant != null && westOccupant == Occupant.WALKER)
-			walkersLocations.add(new Pair(newY, newX - 1));
+			walkersLocations.add(new Pair(newY, newX + 1));
 
 		switch (operator) {
 		case ("Up"):
@@ -106,7 +107,7 @@ public class SaveWesteros extends Problem {
 			break;
 		case ("Left"):
 			if (westOccupant != null && westOccupant == Occupant.FREE)
-				newX--;
+				newX++;
 			else
 				return null;
 			break;
@@ -115,6 +116,7 @@ public class SaveWesteros extends Problem {
 				newAmmo--;
 				Pair location =  walkersLocations.get(0);
 				grid[(int)location.getFirst()][(int)location.getSecond()] = Occupant.FREE;
+				newWalkers--;
 			} else 
 				return null;	
 			break;
@@ -123,6 +125,7 @@ public class SaveWesteros extends Problem {
 				newAmmo--;
 				for (Pair location: walkersLocations)
 					grid[(int)location.getFirst()][(int)location.getSecond()] = Occupant.FREE;
+				newWalkers-=2;
 			} else 
 				return null;
 			break;
@@ -132,15 +135,17 @@ public class SaveWesteros extends Problem {
 				newAmmo--;
 				for (Pair location: walkersLocations)
 					grid[(int)location.getFirst()][(int)location.getSecond()] = Occupant.FREE;
+				newWalkers-=3;
 			} else 
 				return null;	
 			break;
 		case ("Stab4"):
-				if (newAmmo > 0 && walkersLocations.size() == 4) {
+			if (newAmmo > 0 && walkersLocations.size() == 4) {
 				newAmmo--;
 				for (Pair location: walkersLocations)
 					grid[(int)location.getFirst()][(int)location.getSecond()] = Occupant.FREE;
-			} else 
+				newWalkers-=4;
+			} else
 				return null;
 			break;
 		case ("Collect"):
@@ -152,9 +157,10 @@ public class SaveWesteros extends Problem {
 				return null;
 
 		}
-		grid[newY][newX] = Occupant.JON;
+//		System.out.println("da new Y and X: " + newY + " " + newX);
 		grid[ wState.yCoord][wState.xCoord] = Occupant.FREE;
-		WesterosGrid newGrid = new WesterosGrid(grid, wState.wGrid.walkersAmount);
+		grid[newY][newX] = Occupant.JON; // the order of this statement and the one above it is essential!!
+		WesterosGrid newGrid = new WesterosGrid(grid, newWalkers);
 		return new WesterosState(newX, newY, newAmmo, newWalkers, newGrid);
 	}
 
@@ -177,7 +183,8 @@ public class SaveWesteros extends Problem {
 			solutionNode = (Node) solution.getFirst();
 	
 			for (Node current = solutionNode; current != null; current = current.parent) {
-				movesSequence.add(current.operatorApplied); // sequence is in reverse (starts from end)
+				if (current.operatorApplied != null)
+					movesSequence.add(current.operatorApplied); // sequence is in reverse (starts from end)
 			}
 		}
 			
@@ -204,6 +211,9 @@ public class SaveWesteros extends Problem {
 
 		@Override
 		public String toString() {
+			if (movesSequence == null)
+				return "NO SOLUTION!";
+
 			return "THE SOLLUTION:\n Sequence: " + movesSequence.toString() + "\n TotalCost: " + totalCost + "\n Number of Nodes expanded " + numberOfNodesExpanded;
 		}
 	}

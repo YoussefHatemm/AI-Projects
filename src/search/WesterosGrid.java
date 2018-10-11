@@ -16,8 +16,8 @@ public class WesterosGrid {
     }
 
     public static WesterosGrid GenGrid() {
-        int m = (int) (Math.random() * 4) + 4;
-		int n = (int) (Math.random() * 4) + 4;
+        int m = ((int) Math.random() * 4) +4;
+		int n = ((int) Math.random() * 4) +4;
         
         int walkersAmount = 0;
 
@@ -25,19 +25,32 @@ public class WesterosGrid {
 		grid[0][0] = Occupant.JON;
 		
 		Occupant[] cellOptions = Occupant.values();
-		
-		for (int i = 0; i < grid.length; i++)
+
+        int dragonX = (int) (Math.random() * (m - 1)) + 1;
+        int dragonY = (int) (Math.random() * (n - 1)) + 1;
+        grid[dragonX][dragonY] = cellOptions[3];
+
+        for (int i = 0; i < grid.length; i++)
             for (int j = (i == 0) ? 1 : 0; j < grid[i].length; j++) {
+                if (i == dragonX && j == dragonY)
+                    continue;
+
                 grid[i][j] = cellOptions[(int) (Math.random() * 3)];
                 if (grid[i][j] == Occupant.WALKER)
                     walkersAmount++;
             }
-		
-		int dragonX = (int) (Math.random() * (m - 1)) + 1;
-		int dragonY = (int) (Math.random() * (n - 1)) + 1;
-		grid[dragonX][dragonY] = cellOptions[3];
-		
+
 		return new WesterosGrid(grid, walkersAmount);
+    }
+
+    public static Occupant[][] deepCloneGrid(WesterosGrid wGrid) {
+        Occupant [][] oldGrid = wGrid.grid;
+        Occupant [][] newGrid = new Occupant[oldGrid.length][oldGrid[0].length];
+        for (int i = 0; i < oldGrid.length; i++)
+            for(int j= 0; j < oldGrid[0].length; j++)
+                newGrid[i][j] = oldGrid[i][j];
+
+        return newGrid;
     }
 
     public int getWalkersAmount() {
@@ -46,12 +59,14 @@ public class WesterosGrid {
 
     @Override
     public String toString() {
-        String output = "";
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                output += occupantString(grid[i][j]) + " ";
-            }
-            output += "\n";
+        String output = "|";
+
+        for (int i = grid.length - 1; i >= 0; i--) {
+            for (int j = grid[0].length - 1; j >= 0; j--)
+                output += occupantString(grid[i][j]) + "|";
+
+            if (i > 0)
+                output += "\n|";
         }
         return output;
     }
