@@ -23,7 +23,7 @@ public class WesterosState extends State {
 	}
 	 
 	public enum Occupant {
-		WALKER, OBSTACLE, FREE, DRAGONSTONE, JON
+		WALKER, OBSTACLE, FREE, DRAGONSTONE, JON, JONDRAGONSTONE
 	}
 
 	@Override

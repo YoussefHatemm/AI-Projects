@@ -27,18 +27,17 @@ public class SaveWesteros extends Problem {
 
 	public SaveWesteros(WesterosState initialState) {
 		this.operators = new ArrayList<String>();
-		this.operators.add("Up");
-		this.operators.add("Down");
-		this.operators.add("Right");
-		this.operators.add("Left");
+		this.operators.add("Collect");
 		this.operators.add("Stab1");
 		this.operators.add("Stab2");
 		this.operators.add("Stab3");
-		this.operators.add("Stab4");
-		this.operators.add("Collect");
+		this.operators.add("Up");
+		this.operators.add("Left");
+		this.operators.add("Down");
+		this.operators.add("Right");
 
 		this.initialState = initialState;
-		this.capacity = (int) (Math.random() * 100) + 1;
+		this.capacity = (int) (Math.random() * 20) + 1;
 		((WesterosState) this.initialState).ammo = this.capacity;
 
 	}
@@ -53,8 +52,25 @@ public class SaveWesteros extends Problem {
 		int opCost = 0;
 		switch (node.operatorApplied) {
 		// TODO: implement yastaa
-		case (""):
-			break; // opCost = btngan
+		case ("Stab3"):
+			opCost = 1;
+			break;
+		case ("Collect"):
+			opCost = 2;
+			break;
+		case ("Up"):
+		case ("Down"):
+		case ("Left"):
+		case ("Right"):
+			opCost = 3;
+			break;
+		case ("Stab2"):
+			opCost = 4;
+			break;
+		case ("Stab1"):
+			opCost = 16;
+			break;
+
 		}
 		node.setPathCost(opCost + node.parent.pathCost);
 	}
@@ -72,7 +88,7 @@ public class SaveWesteros extends Problem {
 		Occupant southOccupant = (newY > 0) ? grid[newY - 1][newX] : null;
 		Occupant eastOccupant = (newX > 0) ? grid[newY][newX - 1] : null;
 		Occupant westOccupant = (newX < grid[0].length - 1) ? grid[newY][newX + 1] : null;
-		
+
 		ArrayList<Pair> walkersLocations = new ArrayList<Pair>();
 		if (northOccupant != null && northOccupant == Occupant.WALKER)
 			walkersLocations.add(new Pair(newY + 1, newX));
@@ -139,27 +155,43 @@ public class SaveWesteros extends Problem {
 			} else 
 				return null;	
 			break;
-		case ("Stab4"):
-			if (newAmmo > 0 && walkersLocations.size() == 4) {
-				newAmmo--;
-				for (Pair location: walkersLocations)
-					grid[(int)location.getFirst()][(int)location.getSecond()] = Occupant.FREE;
-				newWalkers-=4;
-			} else
-				return null;
-			break;
 		case ("Collect"):
 			if ((northOccupant == Occupant.DRAGONSTONE || eastOccupant == Occupant.DRAGONSTONE
 					|| southOccupant == Occupant.DRAGONSTONE || westOccupant == Occupant.DRAGONSTONE)
-					&& wState.ammo < this.capacity)
+					&& wState.ammo < this.capacity) {
 				newAmmo = this.capacity;
+				if (northOccupant == Occupant.DRAGONSTONE)
+					newY++;
+
+				if (eastOccupant == Occupant.DRAGONSTONE)
+					newX--;
+
+				if (westOccupant == Occupant.DRAGONSTONE)
+					newX++;
+
+				if (southOccupant == Occupant.DRAGONSTONE)
+					newY--;
+			}
+
 			else
 				return null;
 
 		}
 //		System.out.println("da new Y and X: " + newY + " " + newX);
-		grid[ wState.yCoord][wState.xCoord] = Occupant.FREE;
-		grid[newY][newX] = Occupant.JON; // the order of this statement and the one above it is essential!!
+
+		if (operator == "Collect") {
+			grid[newY][newX] = Occupant.JONDRAGONSTONE; // the order of this statement and the one above it is essential!!
+			grid[ wState.yCoord][wState.xCoord] = Occupant.FREE;
+		}
+		else if (!operator.contains("Stab")){
+			if (grid[wState.yCoord][wState.xCoord] == Occupant.JONDRAGONSTONE)
+				grid[wState.yCoord][wState.xCoord] = Occupant.DRAGONSTONE;
+			else
+				grid[wState.yCoord][wState.xCoord] = Occupant.FREE;
+
+			grid[newY][newX] = Occupant.JON;
+		}
+
 		WesterosGrid newGrid = new WesterosGrid(grid, newWalkers);
 		return new WesterosState(newX, newY, newAmmo, newWalkers, newGrid);
 	}
@@ -194,7 +226,7 @@ public class SaveWesteros extends Problem {
 	}
 	public static void main(String []args) {
 		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
-		SolutionTrio solution = Search(westerosGrid, Strategies.bfs, false);
+		SolutionTrio solution = Search(westerosGrid, Strategies.ucs, false);
 		System.out.println(solution.toString());
 	}
 

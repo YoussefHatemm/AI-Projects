@@ -16,8 +16,8 @@ public class WesterosGrid {
     }
 
     public static WesterosGrid GenGrid() {
-        int m = ((int) Math.random() * 4) +4;
-		int n = ((int) Math.random() * 4) +4;
+        int m = 3;
+		int n = 3;
         
         int walkersAmount = 0;
 
@@ -83,6 +83,11 @@ public class WesterosGrid {
                 return "W";
             case JON:
                 return "J";
+
+            case JONDRAGONSTONE:
+                return "J";
+
+
         }
         return null;
     }
