@@ -65,7 +65,7 @@ public class SaveWesteros extends Problem {
 			opCost = 3;
 			break;
 		case ("Stab2"):
-			opCost = 4;
+			opCost = 8;
 			break;
 		case ("Stab1"):
 			opCost = 16;
