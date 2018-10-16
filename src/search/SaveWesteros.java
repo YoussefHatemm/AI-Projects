@@ -65,7 +65,7 @@ public class SaveWesteros extends Problem {
 			opCost = 3;
 			break;
 		case ("Stab2"):
-			opCost = 4;
+			opCost = 8;
 			break;
 		case ("Stab1"):
 			opCost = 16;
@@ -226,7 +226,7 @@ public class SaveWesteros extends Problem {
 	}
 	public static void main(String []args) {
 		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
-		SolutionTrio solution = Search(westerosGrid, Strategies.ucs, false);
+		SolutionTrio solution = Search(westerosGrid, Strategies.AS1, false);
 		System.out.println(solution.toString());
 	}
 
@@ -246,7 +246,7 @@ public class SaveWesteros extends Problem {
 			if (movesSequence == null)
 				return "NO SOLUTION!";
 
-			return "THE SOLLUTION:\n Sequence: " + movesSequence.toString() + "\n TotalCost: " + totalCost + "\n Number of Nodes expanded " + numberOfNodesExpanded;
+			return "THE SOLUTION:\n Sequence: " + movesSequence.toString() + "\n TotalCost: " + totalCost + "\n Number of Nodes expanded " + numberOfNodesExpanded;
 		}
 	}
 }

@@ -6,6 +6,7 @@ public class Node implements Comparable {
 	String operatorApplied;
 	int depth;
 	int pathCost;
+	int heuristicValue;
 	
 	public Node(State state, Node parent, String operatorApplied, int depth) {
 		this.state = state;
@@ -33,10 +34,10 @@ public class Node implements Comparable {
 	public int compareTo(Object o) {
 		Node node = (Node) o;
 
-		if (this.pathCost > node.pathCost)
+		if (this.pathCost + this.heuristicValue > node.pathCost + node.heuristicValue)
 			return 1;
 
-		if (this.pathCost < node.pathCost)
+		if (this.pathCost + this.heuristicValue < node.pathCost + node.heuristicValue)
 			return  -1;
 
 		return 0;
