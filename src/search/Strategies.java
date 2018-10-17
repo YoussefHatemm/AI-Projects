@@ -24,7 +24,7 @@ public class Strategies {
     };
 
     public static ArrayList<Node> sortArrLists(ArrayList<Node> queue, ArrayList<Node> expandedNodes) {
-        ArrayList output = new ArrayList();
+        ArrayList<Node> output = new ArrayList<Node>();
         int i = 0, j = 0;
 
         while (i < queue.size() || j < expandedNodes.size()) {
@@ -60,7 +60,7 @@ public class Strategies {
             node.heuristicValue = simpleCountStab((node));
         }
 
-        ArrayList output = new ArrayList();
+        ArrayList<Node> output = new ArrayList<Node>();
         int i = 0, j = 0;
 
         while (i < queue.size() || j < expandedNodes.size()) {
@@ -111,10 +111,9 @@ public class Strategies {
 
 
 
-//        for(int i = 0; i < expandedNodes.size(); i++) {
-//            for(int j = queue.size(); j >= 0; j--) {
-//                if( < 0)
-//            }
-//        }
+        /*public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> ID = (queue, expandedNodes) -> {
+        	
+            return queue;
+        };*/
 
 }

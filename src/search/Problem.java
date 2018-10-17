@@ -1,8 +1,6 @@
 package search;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Timer;
 import java.util.function.BiFunction;
 
 import utils.Pair;
