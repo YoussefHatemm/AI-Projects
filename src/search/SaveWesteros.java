@@ -246,7 +246,7 @@ public class SaveWesteros extends Problem {
 			if (movesSequence == null)
 				return "NO SOLUTION!";
 
-			return "THE SOLLUTION:\n Sequence: " + movesSequence.toString() + "\n TotalCost: " + totalCost + "\n Number of Nodes expanded " + numberOfNodesExpanded;
+			return "THE SOLUTION:\n Sequence: " + movesSequence.toString() + "\n TotalCost: " + totalCost + "\n Number of Nodes expanded " + numberOfNodesExpanded;
 		}
 	}
 }
