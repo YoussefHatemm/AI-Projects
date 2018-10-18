@@ -26,9 +26,13 @@ public class WesterosState extends State {
 		WALKER, OBSTACLE, FREE, DRAGONSTONE, JON, JONDRAGONSTONE
 	}
 
+	public String simpleString() {
+		return xCoord + yCoord + ammo + wGrid.simpleString();
+	}
+
 	@Override
 	public String toString() {
 		return "Xcoord: " + xCoord + "\n Ycoord: " + yCoord + "\n Ammo:" + ammo + "\n Grid:\n" + wGrid;
 	}
-	
+
 }

@@ -71,6 +71,16 @@ public class WesterosGrid {
         return output;
     }
 
+    public String simpleString() {
+        String hash = "";
+        Occupant [][] grid = this.grid;
+        for (int i = 0; i < grid.length; i++)
+            for(int j= 0; j < grid[0].length; j++)
+                hash += occupantString(grid[i][j]);
+
+        return hash;
+    }
+
     public static String occupantString(Occupant occup) {
         switch (occup) {
             case FREE:

@@ -1,6 +1,8 @@
 package search;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.function.BiFunction;
 
 import utils.Pair;
@@ -13,14 +15,36 @@ public abstract class Problem {
 	abstract void pathCost(Node node);
 	
 	public static Pair generalSearch(Problem problem, BiFunction< ArrayList<Node>, ArrayList<Node>, ArrayList<Node> > strategyQnFn, boolean visualize) {
+		int aux = -1; // auxilarry variable to be used by any strategy such as ID
 		ArrayList<Node> queue = new ArrayList<Node>();
 		State curState = problem.initialState;
 		Node root = new Node(curState, null, null,0);
 		queue.add(root);
 		int nodesExpanded = 0;
+		if (strategyQnFn == Strategies.ID)
+			aux = 0;
+
+		Hashtable<String,State> repeatedStates = new Hashtable<>();
 		while(!queue.isEmpty()) {
 			Node curNode = queue.remove(0);
+
+			if (strategyQnFn == Strategies.ID) {
+				while (curNode.depth > aux && !queue.isEmpty())
+					curNode = queue.remove(0);
+
+				if (queue.isEmpty()) {
+					aux++;
+					repeatedStates.clear();
+					queue.add(root);
+				}
+			}
+
 			curState = curNode.state;
+			if (repeatedStates.contains(curState))
+				continue;
+
+			repeatedStates.put(((WesterosState)curState).simpleString(), curState);
+
 			if (visualize) {
 				System.out.println("Walkers Alive: " + ((WesterosState)curState).walkersAlive);
 				System.out.println("Ammo: " + ((WesterosState)curState).ammo);

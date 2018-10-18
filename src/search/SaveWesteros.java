@@ -1,6 +1,7 @@
 package search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.BiFunction;
 
@@ -219,14 +220,30 @@ public class SaveWesteros extends Problem {
 					movesSequence.add(current.operatorApplied); // sequence is in reverse (starts from end)
 			}
 		}
-			
+		Collections.reverse(movesSequence);
 		int pathCost = (solutionNode != null)? solutionNode.pathCost : 0;
 
 		return new SolutionTrio(movesSequence, pathCost, numberOfNodesExpanded);
 	}
 	public static void main(String []args) {
-		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
-		SolutionTrio solution = Search(westerosGrid, Strategies.AS2, true);
+		Occupant[][] sampleGrid = {
+				{
+					Occupant.JON, Occupant.FREE, Occupant.WALKER, Occupant.FREE
+				},
+				{
+					Occupant.FREE, Occupant.WALKER, Occupant.DRAGONSTONE, Occupant.WALKER
+				},
+				{
+					Occupant.FREE, Occupant.WALKER, Occupant.WALKER, Occupant.WALKER
+				},
+				{
+					Occupant.WALKER, Occupant.FREE, Occupant.WALKER, Occupant.FREE
+				}
+		};
+		int sampleWalkersAmount = 8;
+		WesterosGrid sampleWesterosGrid = new WesterosGrid(sampleGrid, sampleWalkersAmount);
+//		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
+		SolutionTrio solution = Search(sampleWesterosGrid, Strategies.DF, true);
 		System.out.println(solution.toString());
 	}
 

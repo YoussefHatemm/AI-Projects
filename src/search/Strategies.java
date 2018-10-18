@@ -4,6 +4,7 @@ import utils.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -15,6 +16,11 @@ public class Strategies {
     };
 
     public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> DF = (queue, expandedNodes) -> {
+        expandedNodes.addAll(queue);
+        return expandedNodes;
+    };
+
+    public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> ID = (queue, expandedNodes) -> {
         expandedNodes.addAll(queue);
         return expandedNodes;
     };
@@ -60,43 +66,56 @@ public class Strategies {
         for (Node node : expandedNodes) {
             node.heuristicValue = simpleCountStabHeur((node));
         }
+        Collections.sort(expandedNodes, Comparator.comparing(Node::getHeuristicValue));
+        return sortByHueristic(queue, expandedNodes);
+    };
 
+
+    public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> GR2 = (queue, expandedNodes) -> {
+
+        for (Node node : expandedNodes) {
+            node.heuristicValue = closestClusterHeur((node));
+        }
+        Collections.sort(expandedNodes, Comparator.comparing(Node::getHeuristicValue));
+        return sortByHueristic(queue, expandedNodes);
+    };
+
+    public static ArrayList<Node> sortByHueristic(ArrayList<Node> arr1, ArrayList<Node> arr2) {
         ArrayList<Node> output = new ArrayList<Node>();
         int i = 0, j = 0;
 
-        while (i < queue.size() || j < expandedNodes.size()) {
+        while (i < arr1.size() || j < arr2.size()) {
 
-            if (i >= queue.size()) {  // length of arg passed
-                output.add(expandedNodes.get(j++));
+            if (i >= arr1.size()) {  // length of arg passed
+                output.add(arr2.get(j++));
                 continue;
-            } else if (j >= expandedNodes.size()) {
-                output.add(queue.get(i++));
+            } else if (j >= arr2.size()) {
+                output.add(arr1.get(i++));
                 continue;
             }
 
-            if (queue.get(i).heuristicValue == expandedNodes.get(j).heuristicValue) {
-                output.add(queue.get(i));
-                output.add(expandedNodes.get(j));
+            if (arr1.get(i).heuristicValue == arr2.get(j).heuristicValue) {
+                output.add(arr1.get(i));
+                output.add(arr2.get(j));
                 i++;
                 j++;
-            } else if (queue.get(i).heuristicValue < expandedNodes.get(j).heuristicValue) {
-                output.add(queue.get(i));
+            } else if (arr1.get(i).heuristicValue < arr2.get(j).heuristicValue) {
+                output.add(arr1.get(i));
                 i++;
             } else {
-                output.add(expandedNodes.get(j));
+                output.add(arr2.get(j));
                 j++;
             }
         }
 
         return output;
-
-
-    };
+    }
 
     public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> AS1 = (queue, expandedNodes) -> {
         for (Node node : expandedNodes) {
             node.heuristicValue = simpleCountStabHeur((node));
         }
+        Collections.sort(expandedNodes);
         return sortArrLists(queue, expandedNodes);
     };
 
@@ -105,6 +124,7 @@ public class Strategies {
         for (Node node : expandedNodes) {
             node.heuristicValue = closestClusterHeur(node);
         }
+        Collections.sort(expandedNodes);
         return sortArrLists(queue, expandedNodes);
     };
 
@@ -122,6 +142,8 @@ public class Strategies {
     public static int closestClusterHeur(Node node) {
         Node parent = node.parent;
 
+        int moveCost = 3, stab1Cost = 16, stab2Cost = 8, stab3Cost = 1;
+
         WesterosState.Occupant[][] parentGrid = ((WesterosState) parent.state).wGrid.grid;
         WesterosState state = (WesterosState)node.state;
         Pair jonLocation = new Pair(state.yCoord, state.xCoord);
@@ -130,14 +152,14 @@ public class Strategies {
         int value = trioClosest(jonLocation, parentGrid);
 
        if (value != -1)
-            return value;
+            return value * moveCost + stab3Cost;
 
        value = duoClosest(jonLocation, parentGrid);
         if (value != -1)
-            return value* 2;;
+            return value* moveCost + stab2Cost;
 
         value = unoClosest(jonLocation, parentGrid) ;
-        return value * 3;
+        return value * moveCost + stab1Cost;
     }
 
     public static int unoClosest(Pair jonLocation, WesterosState.Occupant[][] grid) {
@@ -228,7 +250,6 @@ public class Strategies {
                     }
                     continue;
                 }
-
                 Pair upperLocation =  checkUpper(i,j,grid);
                 Pair lowerLocation = checkLower(i,j,grid);
                 int temp1,temp2;
@@ -236,7 +257,7 @@ public class Strategies {
                 if (upperLocation != null)
                     temp1 = findDistance(upperLocation, jonLocation);
                 if (lowerLocation != null)
-                    temp2 = findDistance(upperLocation, jonLocation);
+                    temp2 = findDistance(lowerLocation, jonLocation);
 
                 shortestDistance = Math.min(temp1,Math.min(temp2, shortestDistance));
             }
@@ -255,12 +276,12 @@ public class Strategies {
     }
 
     public static boolean isAppproachable(WesterosState.Occupant occ) {
-         return occ != WesterosState.Occupant.OBSTACLE;
+         return occ  == WesterosState.Occupant.FREE || occ == WesterosState.Occupant.DRAGONSTONE;
     }
 
     public static Pair checkUpper(int i, int j, WesterosState.Occupant[][] grid) {
-        if (grid[i + 1][j-1] == WesterosState.Occupant.WALKER &&
-            grid[i+1][j+1] == WesterosState.Occupant.WALKER &&
+        if (grid[i + 1][j-1] == WesterosState.Occupant.WALKER && // up right
+            grid[i+1][j+1] == WesterosState.Occupant.WALKER && // up left
                 isAppproachable(grid[i+1][j])
         ) {
             return new Pair(i+1, j);

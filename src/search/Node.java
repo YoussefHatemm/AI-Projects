@@ -19,6 +19,10 @@ public class Node implements Comparable {
 		this.pathCost = pathCost;
 	}
 
+	public int getHeuristicValue() {
+		return heuristicValue;
+	}
+
 	@Override
 	public String toString() {
 		String parentString = (parent != null)? ( (parent.operatorApplied != null)? parent.operatorApplied : "Initial Node") : "";
