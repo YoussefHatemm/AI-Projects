@@ -203,7 +203,7 @@ public class SaveWesteros extends Problem {
 
 		SaveWesteros saveWesteros = new SaveWesteros(initalState);
 
-		Pair solution = generalSearch(saveWesteros, strategy);
+		Pair solution = generalSearch(saveWesteros, strategy, visualize);
 
 		ArrayList<String> movesSequence = null;
 
@@ -226,7 +226,7 @@ public class SaveWesteros extends Problem {
 	}
 	public static void main(String []args) {
 		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
-		SolutionTrio solution = Search(westerosGrid, Strategies.AS2, false);
+		SolutionTrio solution = Search(westerosGrid, Strategies.UC, true);
 		System.out.println(solution.toString());
 	}
 

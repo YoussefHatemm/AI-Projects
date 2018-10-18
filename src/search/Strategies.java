@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Strategies {
     public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> BF = (queue, expandedNodes) -> {
@@ -24,7 +25,7 @@ public class Strategies {
     };
 
     public static ArrayList<Node> sortArrLists(ArrayList<Node> queue, ArrayList<Node> expandedNodes) {
-        ArrayList output = new ArrayList();
+        ArrayList<Node> output = new ArrayList<Node>();
         int i = 0, j = 0;
 
         while (i < queue.size() || j < expandedNodes.size()) {
@@ -60,7 +61,7 @@ public class Strategies {
             node.heuristicValue = simpleCountStabHeur((node));
         }
 
-        ArrayList output = new ArrayList();
+        ArrayList<Node> output = new ArrayList<Node>();
         int i = 0, j = 0;
 
         while (i < queue.size() || j < expandedNodes.size()) {
@@ -328,10 +329,9 @@ public class Strategies {
     }
 
 
-//        for(int i = 0; i < expandedNodes.size(); i++) {
-//            for(int j = queue.size(); j >= 0; j--) {
-//                if( < 0)
-//            }
-//        }
+        /*public static BiFunction<ArrayList<Node>, ArrayList<Node>, ArrayList<Node>> ID = (queue, expandedNodes) -> {
+        	
+            return queue;
+        };*/
 
 }

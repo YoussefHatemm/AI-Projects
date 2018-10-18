@@ -1,8 +1,6 @@
 package search;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Timer;
 import java.util.function.BiFunction;
 
 import utils.Pair;
@@ -14,7 +12,7 @@ public abstract class Problem {
 	abstract boolean goalTest(State state);
 	abstract void pathCost(Node node);
 	
-	public static Pair generalSearch(Problem problem, BiFunction< ArrayList<Node>, ArrayList<Node>, ArrayList<Node> > strategyQnFn) {
+	public static Pair generalSearch(Problem problem, BiFunction< ArrayList<Node>, ArrayList<Node>, ArrayList<Node> > strategyQnFn, boolean visualize) {
 		ArrayList<Node> queue = new ArrayList<Node>();
 		State curState = problem.initialState;
 		Node root = new Node(curState, null, null,0);
@@ -23,16 +21,11 @@ public abstract class Problem {
 		while(!queue.isEmpty()) {
 			Node curNode = queue.remove(0);
 			curState = curNode.state;
-			System.out.println(((WesterosState) curState).walkersAlive);
-			System.out.println(((WesterosState)curNode.state).wGrid);
-			System.out.println("depth: "+curNode.depth);
-			if (curNode == root) {
-				System.out.println(curNode);
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			if (visualize) {
+				System.out.println("Walkers Alive: " + ((WesterosState)curState).walkersAlive);
+				System.out.println("Ammo: " + ((WesterosState)curState).ammo);
+				System.out.println("Depth: "+curNode.depth);
+				System.out.println(((WesterosState)curNode.state).wGrid);
 			}
 
 //			System.out.println("The currNode is: \n" + curNode.toString());
