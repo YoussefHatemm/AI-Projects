@@ -124,7 +124,7 @@ public class Strategies {
 
         WesterosState.Occupant[][] parentGrid = ((WesterosState) parent.state).wGrid.grid;
         WesterosState state = (WesterosState)node.state;
-        Pair jonLocation = new Pair(state.xCoord, state.yCoord);
+        Pair jonLocation = new Pair(state.yCoord, state.xCoord);
 
 //      Find a trio of walkers
         int value = trioClosest(jonLocation, parentGrid);
@@ -134,10 +134,10 @@ public class Strategies {
 
        value = duoClosest(jonLocation, parentGrid);
         if (value != -1)
-            return value;
+            return value* 2;;
 
-        value = unoClosest(jonLocation, parentGrid);
-        return value;
+        value = unoClosest(jonLocation, parentGrid) ;
+        return value * 3;
     }
 
     public static int unoClosest(Pair jonLocation, WesterosState.Occupant[][] grid) {
@@ -146,21 +146,17 @@ public class Strategies {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j] == WesterosState.Occupant.WALKER) {
-                    ArrayList<Integer> distances = new ArrayList<>();
                     if (i < grid.length -1 && isAppproachable(grid[i+1][j]))
-                        distances.add(findDistance(new Pair(i+1,j), jonLocation));
+                        shortestDistance = Math.min(shortestDistance,findDistance(new Pair(i+1,j), jonLocation));
 
                     if (i > 0 && isAppproachable(grid[i-1][j]))
-                        distances.add(findDistance(new Pair(i-1,j), jonLocation));
+                        shortestDistance = Math.min(shortestDistance,findDistance(new Pair(i-1,j), jonLocation));
 
                     if (j < grid[0].length -1 && isAppproachable(grid[i][j+1]))
-                        distances.add(findDistance(new Pair(i, j+1), jonLocation));
+                        shortestDistance = Math.min(shortestDistance,findDistance(new Pair(i, j+1), jonLocation));
 
                     if (j > 0 && isAppproachable(grid[i][j-1]))
-                        distances.add(findDistance(new Pair(i, j-1), jonLocation));
-
-                    shortestDistance = Math.min(shortestDistance, distances.stream().reduce((x,y) -> x < y? x : y).get());
-
+                        shortestDistance = Math.min(shortestDistance,findDistance(new Pair(i, j-1), jonLocation));
                 }
 
             }
@@ -179,7 +175,7 @@ public class Strategies {
                 if (i == 0) {
                     ArrayList<Pair> locations = checkUpperDuo(i,j,grid);
                     if (!locations.isEmpty()) {
-                        shortestDistance = locations.stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get();
+                        shortestDistance = Math.min(shortestDistance,locations.stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get());
                     }
                     continue;
                 }
@@ -187,13 +183,15 @@ public class Strategies {
                 if (i == grid.length -1) {
                     ArrayList<Pair> locations = checkLowerDuo(i,j,grid);
                     if (!locations.isEmpty()) {
-                        shortestDistance = locations.stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get();
+                        shortestDistance = Math.min(shortestDistance,locations.stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get());
                     }
                     continue;
                 }
 
-                int temp1 =  checkUpperDuo(i,j,grid).stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get();
-                int temp2 = checkLowerDuo(i,j,grid).stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get();
+                ArrayList<Pair> upper = checkUpperDuo(i,j,grid);
+                ArrayList<Pair> lower = checkLowerDuo(i,j,grid);
+                int temp1 =  upper.isEmpty()? upperBound: upper.stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get();
+                int temp2 = lower.isEmpty()? upperBound: lower.stream().map(loc -> findDistance(loc, jonLocation)).reduce((x,y) -> x < y? x : y).get();
                 shortestDistance = Math.min(temp1,Math.min(temp2, shortestDistance));
             }
         }
@@ -257,7 +255,7 @@ public class Strategies {
     }
 
     public static boolean isAppproachable(WesterosState.Occupant occ) {
-         return occ == WesterosState.Occupant.FREE || occ == WesterosState.Occupant.DRAGONSTONE;
+         return occ != WesterosState.Occupant.OBSTACLE;
     }
 
     public static Pair checkUpper(int i, int j, WesterosState.Occupant[][] grid) {

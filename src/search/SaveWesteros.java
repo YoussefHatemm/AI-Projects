@@ -226,7 +226,7 @@ public class SaveWesteros extends Problem {
 	}
 	public static void main(String []args) {
 		WesterosGrid westerosGrid = WesterosGrid.GenGrid();
-		SolutionTrio solution = Search(westerosGrid, Strategies.UC, true);
+		SolutionTrio solution = Search(westerosGrid, Strategies.AS2, true);
 		System.out.println(solution.toString());
 	}
 
