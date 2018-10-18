@@ -3,6 +3,7 @@ package search;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Strategies {
 
@@ -53,4 +54,5 @@ public class Strategies {
 //            }
 //        }
     };
-}
+
+    }
