@@ -40,10 +40,10 @@ public abstract class Problem {
 			}
 
 			curState = curNode.state;
-			if (repeatedStates.contains(curState))
+			if (repeatedStates.containsKey(curState.toString()))
 				continue;
 
-			repeatedStates.put(((WesterosState)curState).simpleString(), curState);
+			repeatedStates.put(curState.toString(), curState);
 
 			if (visualize) {
 				System.out.println("Walkers Alive: " + ((WesterosState)curState).walkersAlive);
@@ -53,7 +53,7 @@ public abstract class Problem {
 			}
 
 //			System.out.println("The currNode is: \n" + curNode.toString());
-			if (problem.goalTest(curState))
+				if (problem.goalTest(curState))
 				return new Pair(curNode, nodesExpanded);
 
 			queue = strategyQnFn.apply(queue, problem.expand(curNode));
