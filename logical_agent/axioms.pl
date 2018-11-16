@@ -38,5 +38,11 @@ ajdacentToJon(X1,Y1,S) :-
 
 walker(X,Y, result(A,S)) :-
     walker(X,Y,S), A \= stab ;
-    walker(X,Y,S), A = stab, \+ajdacentToJon(X,Y,S), ammo(X1,s0), X1
-     > 0.
+    walker(X,Y,S), A = stab, ( \+ajdacentToJon(X,Y,S) ; (ammo(X1,s0), X1 > 0 ) ).
+
+iterative_deepening(Goal, Limit) :-
+    call_with_depth_limit(Goal, Limit,_).
+    
+iterative_deepening(Goal, Limit) :-
+    NewLimit is Limit + 1, 
+    call_with_depth_limit(Goal, NewLimit,_).
