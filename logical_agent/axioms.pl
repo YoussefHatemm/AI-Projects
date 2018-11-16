@@ -29,14 +29,10 @@ jon(X, Y, result(A, S)) :-
     (Z is Y + 1, jon(X,Z,S), A = down);
     (Z is Y - 1, jon(X,Z,S), A = up)).
 
+walkersAlive(N, result(A, S)) :-
+	walkersAlive(N, S), (A = up ; A = down ; A = left; A = right ; A = refill ; (A = stab, jon(X, Y, S), Z1 is X + 1, \+walker(Z1, Y, S), Z2 is X - 1, \+walker(Z2, Y, S), Z3 is Y + 1, 
+		\+walker(X, Z3, S), Z4 is Y - 1, \+walker(X, Z4, S))).
 
 
-
-
-
-
-
-
-
-
-
+walkersAlive(N, result(A, S)) :-
+	M is N + 1, walkersAlive(M, S), A = stab, jon(X, Y, S), (Z1 is X + 1, walker(Z1, Y, S) ; Z2 is X - 1, walker(Z2, Y, S) ; Z3 is Y + 1, walker(X, Z3, S) ; Z4 is Y - 1, walker(X, Z4, S)).
