@@ -17,10 +17,6 @@ approachable(X, Y, S) :-
 
 % walker(1,2, result(stab, s0)).
 
-jon(X, Y, result(A, S)) :- 
-    jon(X,Y,S), (A = stab ; A = refill ; (A = up, \+approachable(X, Z, S), Z is Y + 1) ; (A = down, \+approachable(X, Z, S), Z is Y-1) ; 
-(A = left, \+approachable(Z, Y, S), Z is X + 1) ; (A = right, \+approachable(Z, Y, S), Z is X - 1)).
-    
 
 jon(X, Y, result(A, S)) :- 
     approachable(X ,Y, S),
@@ -28,6 +24,14 @@ jon(X, Y, result(A, S)) :-
     (Z is X + 1, jon(Z,Y,S), A = right);
     (Z is Y + 1, jon(X,Z,S), A = down);
     (Z is Y - 1, jon(X,Z,S), A = up)).
+
+    
+jon(X, Y, result(A, S)) :- 
+    jon(X,Y,S), (A = stab ; A = refill ; (A = up, Z is Y + 1, \+approachable(X, Z, S)) ; (A = down, Z is Y-1, \+approachable(X, Z, S)) ; 
+(A = left, Z is X + 1, \+approachable(Z, Y, S)) ; (A = right, Z is X - 1, \+approachable(Z, Y, S))).
+    
+
+
 
 
 
