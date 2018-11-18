@@ -20,10 +20,12 @@ approachable(X, Y, S) :-
 
 jon(X, Y, result(A, S)) :- 
     approachable(X ,Y, S),
-    ((Z is X -1, jon(Z, Y, S), A = left);
+    (
+    (Z is X - 1, jon(Z,Y,S), A = left);
     (Z is X + 1, jon(Z,Y,S), A = right);
     (Z is Y + 1, jon(X,Z,S), A = down);
-    (Z is Y - 1, jon(X,Z,S), A = up)).
+    (Z is Y - 1, jon(X,Z,S), A = up)
+    ).
 
     
 jon(X, Y, result(A, S)) :- 
@@ -33,6 +35,15 @@ jon(X, Y, result(A, S)) :-
 
 
 
+ammo(X,result(A,S)) :-
+	
+	(A = refill , maxAmmo(X)) ; (A = stab , X is X-1 ).
+	
+
+ammo(X,result(A,S)) :-
+	
+	ammo(X,S), (A = up ; A = down ;  A = right ; A = left).
+	
 
 
 
