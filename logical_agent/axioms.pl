@@ -32,17 +32,11 @@ jon(X, Y, result(A, S)) :-
     jon(X,Y,S), (A = stab ; A = refill ; (A = up, Z is Y + 1, \+approachable(X, Z, S)) ; (A = down, Z is Y-1, \+approachable(X, Z, S)) ; 
 (A = left, Z is X + 1, \+approachable(Z, Y, S)) ; (A = right, Z is X - 1, \+approachable(Z, Y, S))).
     
-
-
-
 ammo(X,result(A,S)) :-
+	(A = refill , maxAmmo(X)) ; (A = stab , ammo(X1, S), X1 is X + 1, X1 > 0).
 	
-	(A = refill , maxAmmo(X)) ; (A = stab , X is X-1 ).
-	
-
 ammo(X,result(A,S)) :-
-	
-	ammo(X,S), (A = up ; A = down ;  A = right ; A = left).
+	ammo(X,S), (A \= stab, A \= refill).
 	
 
 
