@@ -29,7 +29,15 @@ jon(X, Y, result(A, S)) :-
 jon(X, Y, result(A, S)) :- 
     jon(X,Y,S), (A = stab ; A = refill ; (A = up, Z is Y + 1, \+approachable(X, Z, S)) ; (A = down, Z is Y-1, \+approachable(X, Z, S)) ; 
 (A = left, Z is X + 1, \+approachable(Z, Y, S)) ; (A = right, Z is X - 1, \+approachable(Z, Y, S))).
-    
+
+iterative_deepening(Goal, Limit) :-
+    call_with_depth_limit(Goal, Limit,X),
+    X \= depth_limit_exceeded,
+    !.
+
+iterative_deepening(Goal, Limit) :-
+    NewLimit is Limit + 1,
+    iterative_deepening(Goal, NewLimit).
 
 
 
