@@ -25,9 +25,8 @@ jon(X, Y, result(A, S)) :-
     (Z is Y - 1, jon(X,Z,S), A = up)).
 
 jon(X, Y, result(A, S)) :- 
-    jon(X,Y,S), (A = stab ; A = refill ; (A = up, Z is Y + 1, \+approachable(X, Z, S)) ; (A = down, Z is Y-1, \+approachable(X, Z, S)) ; 
+    jon(X,Y,S), (A = stab; A = refill ; (A = up, Z is Y + 1, \+approachable(X, Z, S)) ; (A = down, Z is Y-1, \+approachable(X, Z, S)) ; 
 (A = left, Z is X + 1, \+approachable(Z, Y, S)) ; (A = right, Z is X - 1, \+approachable(Z, Y, S))).
-    
     
 ajdacentToJon(X1,Y1,S) :-
     jon(X,Y,S), ( (X1 = X, Y1 is Y +1) ; (X1 is X + 1, Y1 is Y) ; (X1 is X -1, Y1 is Y); (X1 = X, Y1 is Y -1) ).
@@ -43,10 +42,9 @@ iterative_deepening(Goal, Limit) :-
     NewLimit is Limit + 1, 
     call_with_depth_limit(Goal, NewLimit,_).
 
-    walkersAlive(N, result(A, S)) :-
-	walkersAlive(N, S), (A = up ; A = down ; A = left; A = right ; A = refill ; (A = stab, jon(X, Y, S), Z1 is X + 1, \+walker(Z1, Y, S), Z2 is X - 1, \+walker(Z2, Y, S), Z3 is Y + 1, 
-		\+walker(X, Z3, S), Z4 is Y - 1, \+walker(X, Z4, S))).
+% walkersAlive(N, result(A, S)) :-
+% walkersAlive(N, S), (A = up ; A = down ; A = left; A = right ; A = refill ; (A = stab, jon(X, Y, S), Z1 is X + 1, \+walker(Z1, Y, S), Z2 is X - 1, \+walker(Z2, Y, S), Z3 is Y + 1, 
+%     \+walker(X, Z3, S), Z4 is Y - 1, \+walker(X, Z4, S))).
 
-
-walkersAlive(N, result(A, S)) :-
-	M is N + 1, walkersAlive(M, S), A = stab, jon(X, Y, S), (Z1 is X + 1, walker(Z1, Y, S) ; Z2 is X - 1, walker(Z2, Y, S) ; Z3 is Y + 1, walker(X, Z3, S) ; Z4 is Y - 1, walker(X, Z4, S)).
+% walkersAlive(N, result(A, S)) :-
+% 	M is N + 1, walkersAlive(M, S), A = stab, jon(X, Y, S), (Z1 is X + 1, walker(Z1, Y, S) ; Z2 is X - 1, walker(Z2, Y, S) ; Z3 is Y + 1, walker(X, Z3, S) ; Z4 is Y - 1, walker(X, Z4, S)).
