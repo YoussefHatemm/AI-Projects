@@ -21,19 +21,24 @@ jon(X, Y, result(A, S)) :-
     (X is X1 + 1, Y = Y1, approachable(X ,Y, S),  A = left);
     (X is X1 - 1, Y = Y1,  approachable(X ,Y, S), A = right);
     (X = X1, Y is Y1 - 1, approachable(X ,Y, S), A = down);
-    (X = X1, Y is Y1 + 1, approachable(X ,Y, S), A = up)
+    (X = X1, Y is Y1 + 1, call_with_depth_limit(approachable(X ,Y, S),5,_), A = up)
     ).
 
 jon(X, Y, result(A, S)) :- 
-    jon(X,Y,S), ( (A = stab; A = refill) ; (A = up, Z is Y + 1, \+approachable(X, Z, S) , !) ; (A = down, Z is Y-1, \+approachable(X, Z, S), !) ; 
-    (A = left, Z is X + 1, \+approachable(Z, Y, S), !) ; (A = right, Z is X - 1, \+approachable(Z, Y, S), ! ) ).
+    jon(X,Y,S), ( (A = stab; A = refill) ; (A = up, Z is Y + 1, \+approachable(X, Z, S)) ; (A = down, Z is Y-1, \+approachable(X, Z, S)) ; 
+    (A = left, Z is X + 1, \+approachable(Z, Y, S)) ; (A = right, Z is X - 1, \+approachable(Z, Y, S)) ).
     
 adjacentToJon(X1,Y1,S) :-
     jon(X,Y,S), ( (X1 = X, Y1 is Y +1) ; (X1 is X + 1, Y1 is Y) ; (X1 is X -1, Y1 is Y); (X1 = X, Y1 is Y -1) ).
 
+
+notAdjacentToJon(X1,Y1,S) :-
+        jon(X,Y,S), (\+(Y1 is Y +1); X \= X1) , (\+(X1 is X + 1) ; Y \= Y), (\+(X1 is X -1) ; Y1 \= Y), (\+(Y1 is Y -1); X1 \= X).
+
+
 walker(X,Y, result(A,S)) :-
-    walker(X,Y,S), A \= stab, !;
-    walker(X,Y,S), A = stab,!, ( \+adjacentToJon(X,Y,S) ; (ammo(X1,S), X1 = 0 ) ).
+    walker(X,Y,S), A \= stab;
+    walker(X,Y,S), A = stab,( notAdjacentToJon(X,Y,S) ; (ammo(X1,S), X1 = 0 ) ).
 
 killed(X,Y,result(A,S)) :-
     walker(X,Y,S), adjacentToJon(X,Y,S), ammo(X1,S), X1 > 0, A = stab.
