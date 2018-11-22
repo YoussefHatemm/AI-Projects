@@ -1,0 +1,11 @@
+width(3).
+height(3).
+jon(1,1,s0).
+maxAmmo(19).
+dragonStone(2,3).
+walker(1,2,s0).
+obstacle(2,1).
+obstacle(3,1).
+obstacle(3,2).
+walker(3,3,s0).
+walkersAlive(2,s0).

@@ -1,3 +1,5 @@
+% The query used to generate the plan:
+%   id(walkersAlive(0, S), 1).
 :- include('grid.pl').
 
 ammo(X, s0) :- maxAmmo(X).
@@ -5,11 +7,8 @@ ammo(X, s0) :- maxAmmo(X).
 approachable(X, Y, S) :- 
     (\+walker(X,Y,s0) ; killed(X,Y,S)) ,\+obstacle(X,Y), height(Z), \+(Y is Z + 1), Y \= 0, width(W), \+(X is W + 1), X \= 0.
 
-% walker(1,2, result(stab, s0)).
-
 unapproachable(X, Y, S) :-	
     walker(X,Y,S) ; obstacle(X,Y) ; ( height(Z), Y is Z + 1 ) ; Y = 0 ; (width(W), X is W + 1);  X = 0.
-
 
 jon(X, Y, result(A, S)) :- 
     jon(X1,Y1,S),
@@ -59,10 +58,6 @@ ammo(X,result(A,S)) :-
 ammo(X,result(A,S)) :-
 	ammo(X,S), ( (A \= stab, A \= refill)).
 
-% countNumberOfAdjacentWalkers(X,Y,S) :-
-    % foreach(Generator, Goal)
-    
-
 walkersAlive(N, result(A, S)) :-
     walkersAlive(M, S), A = stab, jon(X, Y, S),  ammo(V,S), V > 0,
     X1 is X -1, X2 is X +1, Y1 is Y - 1, Y2 is Y +1,
@@ -85,10 +80,7 @@ walkersAlive(N, result(A, S)) :-
     ((walker(X,Y2, S)), N is M - 1)
     ).
 
-
 walkersAlive(N, result(A, S)) :-
 	walkersAlive(N, S), (A = up ; A = down ; A = left; A = right ; A = refill ; 
         (A = stab, jon(X, Y, S), Z1 is X + 1, (\+walker(Z1, Y, s0) ; killed(Z1, Y, S)) , Z2 is X - 1, (\+walker(Z2, Y, s0); killed(Z2, Y, S)), Z3 is Y + 1, 
 		(\+walker(X, Z3, s0); killed(X, Z3, S)) , Z4 is Y - 1, (\+walker(X, Z4, s0); killed(X,Z4,S) ) )).
-
-
