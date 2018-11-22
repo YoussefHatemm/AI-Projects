@@ -30,14 +30,14 @@ def gen_grid_atoms(dimensions):
 
             option = Occupant(randint(1,3))
 
-            if option== Occupant.WALKER:
+            if option == Occupant.WALKER:
                 file.write('walker({},{},s0).\n'.format(i, j))
                 walkersAmount += 1
 
             elif option == Occupant.OBSTACLE:
                 file.write('obstacle({},{}).\n'.format(i, j))
 
-    file.write("walkersAlive({}).\n".format(walkersAmount))
+    file.write("walkersAlive({},s0).\n".format(walkersAmount))
     file.close()
 
 if __name__ == "__main__":
