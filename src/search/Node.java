@@ -15,6 +15,7 @@ public class Node implements Comparable {
 		this.depth = depth;
 	}
 
+	//comment
 	public void setPathCost(int pathCost) {
 		this.pathCost = pathCost;
 	}
