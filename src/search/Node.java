@@ -16,6 +16,7 @@ public class Node implements Comparable {
 	}
 
 	//comment
+	//Further helpful comment
 	public void setPathCost(int pathCost) {
 		this.pathCost = pathCost;
 	}
